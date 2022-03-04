@@ -12,15 +12,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-if (env.nodeEnv === "production") {
-  app.use(express.static("client/build"));
-  app.get("*", function (req, res) {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-  });
-}
-
 app.use("/api", routes);
 app.use(errorHandler);
+
+if (env.nodeEnv === "production") {
+  app.use("/", express.static(path.join(__dirname, "public")));
+}
 
 const startServer = async (): Promise<void> => {
   try {

@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
-    "heroku-postbuild": "rm -rf dist/ && tsc && mkdir -p dist/public/ && cd ../client && npm install && npm run build && cp -r build/* ../server/dist/public",
     "start": "node dist/index.js"
   },
   "repository": {

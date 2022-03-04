@@ -1,0 +1,23 @@
+{
+  "name": "battery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm i -g typescript && cd server && rm -rf dist/ && npm run compile && cd ../client && npm install && npm run build && cp -r build/* ../server/dist/public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adhupraba/dashboard-battery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adhupraba/dashboard-battery/issues"
+  },
+  "homepage": "https://github.com/adhupraba/dashboard-battery#readme",
+  "engines": {
+    "node": "14.x"
+  }
+}

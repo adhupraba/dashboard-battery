@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { ApexOptions } from "apexcharts";
 import ApexCharts from "react-apexcharts";
 import { containerTitleStyles } from "src/constants";
 
@@ -16,7 +15,7 @@ const chartSeries = [
   },
 ];
 
-const chartOptions: ApexOptions = {
+const chartOptions: any = {
   title: {
     text: "Power Cost",
     style: containerTitleStyles,

@@ -16,7 +16,7 @@ import {
   PowerSettingsNewOutlined,
 } from "@mui/icons-material";
 
-export const drawerWidth = 280;
+export const drawerWidth = 270;
 
 export const sidebarItems: SideBarItem[] = [
   { icon: GridViewOutlined, name: "Dashboard", route: "dashboard" },

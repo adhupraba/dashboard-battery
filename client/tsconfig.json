@@ -13,8 +13,7 @@
     "baseUrl": "./",
     "paths": {
       "src/*": ["./src/*"],
-      "types/*": ["./types/*"],
-      "public/*": ["./public/*"]
+      "types/*": ["./types/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -22,6 +21,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "types", "public"],
+  "include": ["src", "types"],
   "exclude": ["node_modules"]
 }

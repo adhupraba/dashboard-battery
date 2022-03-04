@@ -3,10 +3,14 @@ import { containerTitleStyles } from "src/constants";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Stack } from "@mui/material";
+import { numInputValidator, restApi } from "src/utils";
+import { useAlertCtx } from "src/context/alertContext";
 
 interface Props {}
 
 export const Form: FC<Props> = () => {
+  const { setAlerts } = useAlertCtx();
+
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .min(2, "*Names must have at least 2 characters")
@@ -23,7 +27,7 @@ export const Form: FC<Props> = () => {
       .email("*Must be a valid email address")
       .required("*Email is required"),
     phone: Yup.string()
-      .matches(/^(?!\d{10})$/, "*Phone number is not valid")
+      .matches(/^\d{10}$/, "*Phone number must be valid 10 digit number")
       .required("*Phone number required"),
   });
 
@@ -45,21 +49,28 @@ export const Form: FC<Props> = () => {
           phone: "",
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-          console.log(values);
+          try {
+            setSubmitting(true);
+
+            const tempBody = { ...values, phone: values.phone.toString() };
+            const { id } = await restApi({
+              url: "http://localhost:5000/api/alert",
+              body: JSON.stringify(tempBody),
+            });
+
+            setAlerts((prevState) => {
+              return [...prevState, { ...tempBody, id }];
+            });
+
+            resetForm();
+          } catch (err: any) {
+            console.error("Form component =>", err);
+          } finally {
+            setSubmitting(false);
+          }
         }}
       >
-        {({
-          values,
-          errors,
-          touched,
-          validateOnBlur,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-          setFieldTouched,
-          setFieldValue,
-        }) => (
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
           <form onSubmit={handleSubmit} autoComplete="off">
             <Stack direction="column" spacing={2}>
               <div>
@@ -80,7 +91,7 @@ export const Form: FC<Props> = () => {
                   <input
                     type="radio"
                     name="criteria"
-                    value={"gte"}
+                    value={"gt"}
                     checked={values.criteria === "gt"}
                     defaultChecked
                     onChange={handleChange}
@@ -103,10 +114,12 @@ export const Form: FC<Props> = () => {
               </div>
               <div>
                 <input
-                  type="text"
+                  type="number"
                   name="criteriaValue"
+                  min={0}
                   placeholder="Value"
                   value={values.criteriaValue}
+                  onKeyDown={numInputValidator}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className={`input ${touched.criteriaValue && errors.criteriaValue ? "error" : ""}`}
@@ -127,7 +140,13 @@ export const Form: FC<Props> = () => {
                   className={`input ${touched.dayType && errors.dayType ? "error" : ""}`}
                 >
                   <option value="everyday">Everyday</option>
-                  <option value="today">Today</option>
+                  <option value="sunday">Sunday</option>
+                  <option value="monday">Monday</option>
+                  <option value="tuesday">Tuesday</option>
+                  <option value="wednesday">Wednesday</option>
+                  <option value="thursday">Thursday</option>
+                  <option value="friday">Friday</option>
+                  <option value="saturday">Saturday</option>
                 </select>
                 {touched.dayType && errors.dayType ? <div className="errorMessage">{errors.dayType}</div> : <br />}
               </div>
@@ -141,8 +160,10 @@ export const Form: FC<Props> = () => {
                   placeholder="Price Signal"
                   className={`input ${touched.priceSignal && errors.priceSignal ? "error" : ""}`}
                 >
-                  <option value="dk1">DK1</option>
-                  <option value="dk2">DK2</option>
+                  <option value="DK1">DK1</option>
+                  <option value="DK2">DK2</option>
+                  <option value="DK3">DK3</option>
+                  <option value="DK4">DK4</option>
                 </select>
                 {touched.priceSignal && errors.priceSignal ? (
                   <div className="errorMessage">{errors.priceSignal}</div>
@@ -164,9 +185,10 @@ export const Form: FC<Props> = () => {
               </div>
               <div>
                 <input
-                  type="text"
+                  type="number"
                   name="phone"
                   placeholder="Phone"
+                  onKeyDown={numInputValidator}
                   value={values.phone}
                   onChange={handleChange}
                   onBlur={handleBlur}

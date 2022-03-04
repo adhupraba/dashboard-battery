@@ -3,3 +3,5 @@ export const containerTitleStyles = {
   fontWeight: 700,
   fontSize: "16px",
 };
+
+export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

@@ -23,16 +23,29 @@ import {
   Typography,
 } from "@mui/material";
 import { ExpandMore, Menu } from "@mui/icons-material";
+import { useAuthCtx } from "src/context";
 
 interface ISideBarProps {}
 
 export const SideBar: FC<ISideBarProps> = () => {
   const navigate = useNavigate();
+  const { user, setUser, setToken } = useAuthCtx();
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const navigateToPage = (path: string) => {
+    if (path === "logout") {
+      localStorage.removeItem("battery-token");
+      setToken(undefined);
+      setUser(undefined);
+      navigate("/login");
+    } else {
+      navigate(`/${path}`);
+    }
   };
 
   const drawer = (
@@ -44,10 +57,14 @@ export const SideBar: FC<ISideBarProps> = () => {
       <List>
         <ListItem>
           <ListItemIcon>
-            <Avatar alt="Adharsh" src={ProfileIcon} />
+            <Avatar alt={user?.name} src={ProfileIcon} />
           </ListItemIcon>
           <Stack>
-            <ListItemText classes={{ primary: "highlight" }} primary={"Hey, Adharsh"} secondary={"User Id: ABC-24"} />
+            <ListItemText
+              classes={{ primary: "highlight" }}
+              primary={`Hey, ${user?.name}`}
+              secondary={`User Id: ${user?.id}`}
+            />
           </Stack>
         </ListItem>
         {sidebarItems.map((item, idx) => {
@@ -76,7 +93,7 @@ export const SideBar: FC<ISideBarProps> = () => {
                         key={index}
                         button
                         style={{ padding: "10px 16px", marginTop: "0px" }}
-                        onClick={() => navigate(`/${nestedItem.route}`)}
+                        onClick={() => navigateToPage(nestedItem.route)}
                       >
                         <ListItemIcon>{<nestedItem.icon />}</ListItemIcon>
                         <ListItemText primary={nestedItem.name} />
@@ -88,7 +105,7 @@ export const SideBar: FC<ISideBarProps> = () => {
             );
           } else {
             return (
-              <ListItem key={idx} button onClick={() => navigate(`/${item.route}`)}>
+              <ListItem key={idx} button onClick={() => navigateToPage(item.route)}>
                 <ListItemIcon>{<item.icon />}</ListItemIcon>
                 <ListItemText primary={item.name} />
               </ListItem>

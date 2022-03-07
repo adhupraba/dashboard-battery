@@ -12,11 +12,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use("/api", routes);
+
 if (env.nodeEnv === "production") {
-  app.use("/", express.static(path.join(__dirname, "public")));
+  const buildPath = path.normalize(path.join(__dirname, "public"));
+  app.use(express.static(buildPath));
+  app.get("(/*)?", (req, res) => {
+    return res.sendFile(path.join(buildPath, "index.html"));
+  });
 }
 
-app.use("/api", routes);
 app.use(errorHandler);
 
 const startServer = async (): Promise<void> => {

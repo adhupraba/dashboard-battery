@@ -14,7 +14,7 @@ const init = {
   } as HeadersInit,
 };
 
-export const restApi = async ({ url, method, headers, body }: Params) => {
+export const restApi = async ({ url, method = init.method, headers, body }: Params) => {
   try {
     console.log({ headers });
 

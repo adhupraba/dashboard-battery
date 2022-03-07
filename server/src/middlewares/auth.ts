@@ -3,8 +3,9 @@ import { BadRequestError, UnauthorizedRequestError } from "../errors";
 import jwt from "jsonwebtoken";
 import { env } from "../constants";
 
-export const authentication = async (req: Request, res: Response, next: NextFunction) => {
+export const authentication = (req: Request, res: Response, next: NextFunction) => {
   const header = req.headers.authorization;
+  console.log({ header });
   const token = header?.split(" ")[1];
 
   if (!token) {

@@ -15,6 +15,7 @@ const App = () => {
 
   const localToken = localStorage.getItem("battery-token");
   const { decodedToken, isExpired } = useJwt(localToken || "");
+  console.log({ decodedToken });
 
   useEffect(() => {
     if (localToken) {
@@ -28,7 +29,7 @@ const App = () => {
       setToken(undefined);
       setUser(undefined);
     }
-  }, []);
+  }, [decodedToken]);
 
   return (
     <AuthContext.Provider value={{ token, setToken, user, setUser }}>

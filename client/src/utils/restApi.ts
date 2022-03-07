@@ -14,21 +14,24 @@ const init = {
   } as HeadersInit,
 };
 
-export const restApi = async ({ url, method = init.method, headers = init.headers, body }: Params) => {
+export const restApi = async ({ url, method, headers, body }: Params) => {
   try {
+    console.log({ headers });
+
     const res = await fetch(url, {
       method,
       headers,
       body,
     });
 
-    if (!res.ok) {
-      throw new Error("Something went wrong!");
+    const data = await res.json();
+
+    if (data?.errors?.length) {
+      throw data.errors;
     }
 
-    const data = await res.json();
     return data;
   } catch (err: any) {
-    throw new Error(err.message);
+    throw err;
   }
 };

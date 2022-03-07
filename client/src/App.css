@@ -34,6 +34,17 @@
   border-radius: 12px;
 }
 
+.error-container {
+  margin: 10px 0;
+  padding: 10px;
+  background: #ff656540;
+  border-radius: 12px;
+  border: 1px solid #ff6565;
+  color: #ff6565;
+  list-style-type: disc;
+  list-style: inside;
+}
+
 .error {
   border-color: #ff6565 !important;
 }

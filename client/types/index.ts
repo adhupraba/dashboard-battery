@@ -23,3 +23,5 @@ export type AlertType = {
   email: string;
   dayType: string;
 };
+
+export type ErrorType = { message: string; field: string };

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm i -g typescript && cd server && rm -rf dist/ && npm run compile && cd ../client && npm install && npm run build && cp -r build/* ../server/dist/public"
+    "build": "cd server && rm -rf dist/ && npm run compile && cd ../client && npm install && npm run build && cp -r build/* ../server/dist/public"
   },
   "repository": {
     "type": "git",

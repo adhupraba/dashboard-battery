@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
     "start": "node dist/index.js",
-    "compile": "tsc"
+    "compile": "tsc && mkdir -p dist/public/"
   },
   "repository": {
     "type": "git",

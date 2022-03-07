@@ -1,16 +1,18 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { containerTitleStyles } from "src/constants";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Grid, Stack } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { restApi } from "src/utils";
+import { baseUrl, restApi } from "src/utils";
 import { useAuthCtx } from "src/context";
+import { ErrorType } from "types";
 
 type IRegisterProps = {};
 
 export const Register: FC<IRegisterProps> = () => {
   const { setToken, setUser } = useAuthCtx();
+  const [apiErrors, setApiErrors] = useState<ErrorType[]>([]);
   const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
@@ -50,7 +52,7 @@ export const Register: FC<IRegisterProps> = () => {
                 setSubmitting(true);
 
                 const res = await restApi({
-                  url: "http://localhost:5000/api/register",
+                  url: `${baseUrl}/api/register`,
                   body: JSON.stringify({
                     name: values.name,
                     email: values.email,
@@ -65,6 +67,7 @@ export const Register: FC<IRegisterProps> = () => {
                 navigate("/dashboard");
               } catch (err: any) {
                 console.error("Register page =>", err);
+                setApiErrors(err);
               } finally {
                 setSubmitting(false);
               }
@@ -120,6 +123,13 @@ export const Register: FC<IRegisterProps> = () => {
               </form>
             )}
           </Formik>
+          {apiErrors.length > 0 && (
+            <ul className="error-container">
+              {apiErrors.map((err) => (
+                <li>{err.message}</li>
+              ))}
+            </ul>
+          )}
           <p style={{ marginTop: "10px" }}>
             Already have an account? <Link to="/login">Login</Link>
           </p>

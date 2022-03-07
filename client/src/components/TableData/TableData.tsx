@@ -10,30 +10,46 @@ import {
   TableRow,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import { restApi } from "src/utils";
-import { days } from "src/constants";
-import { useAlertCtx } from "src/context/alertContext";
+import { baseUrl, restApi } from "src/utils";
+import { days, toastOptions } from "src/constants";
+import { useAlertCtx, useAuthCtx } from "src/context";
+import { toast } from "react-toastify";
 
 interface ITableDataProps {}
 
 export const TableData: FC<ITableDataProps> = () => {
   const { alerts, setAlerts } = useAlertCtx();
+  const { token } = useAuthCtx();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchAlertData = async () => {
-      const res = await restApi({ url: "http://localhost:5000/api/alerts", method: "GET" });
-      setAlerts(res.alerts);
+      try {
+        const res = await restApi({
+          url: `${baseUrl}/api/alerts`,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        setAlerts(res.alerts);
+      } catch (err: any) {
+        console.log("fetchAlertData =>", err[0].message);
+        if (err.length) {
+          console.log("if check");
+          toast.error(err[0].message, toastOptions);
+        } else {
+          console.log("else check");
+          toast.error(err.message, toastOptions);
+        }
+      }
     };
 
     fetchAlertData();
   }, []);
-
-  useEffect(() => {
-    console.log({ alerts });
-  }, [alerts]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -47,8 +63,12 @@ export const TableData: FC<ITableDataProps> = () => {
   const removeAlert = async (idx: number, alertId: number) => {
     try {
       await restApi({
-        url: "http://localhost:5000/api/alert",
+        url: `${baseUrl}/api/alert`,
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ id: alertId }),
       });
       setAlerts((prevState) => {
@@ -58,6 +78,11 @@ export const TableData: FC<ITableDataProps> = () => {
       });
     } catch (err: any) {
       console.error("Alert Table =>", err);
+      if (err.length) {
+        toast.error(err[0].message, toastOptions);
+      } else {
+        toast.error(err.message, toastOptions);
+      }
     }
   };
 

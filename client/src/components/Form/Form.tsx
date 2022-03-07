@@ -1,14 +1,16 @@
 import { FC } from "react";
-import { containerTitleStyles } from "src/constants";
+import { containerTitleStyles, toastOptions } from "src/constants";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Stack } from "@mui/material";
-import { numInputValidator, restApi } from "src/utils";
-import { useAlertCtx } from "src/context/alertContext";
+import { baseUrl, numInputValidator, restApi } from "src/utils";
+import { toast } from "react-toastify";
+import { useAuthCtx, useAlertCtx } from "src/context";
 
 interface Props {}
 
 export const Form: FC<Props> = () => {
+  const { token } = useAuthCtx();
   const { setAlerts } = useAlertCtx();
 
   const validationSchema = Yup.object().shape({
@@ -54,7 +56,12 @@ export const Form: FC<Props> = () => {
 
             const tempBody = { ...values, phone: values.phone.toString() };
             const { id } = await restApi({
-              url: "http://localhost:5000/api/alert",
+              url: `${baseUrl}/api/alert`,
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
               body: JSON.stringify(tempBody),
             });
 
@@ -65,6 +72,11 @@ export const Form: FC<Props> = () => {
             resetForm();
           } catch (err: any) {
             console.error("Form component =>", err);
+            if (err.length) {
+              toast.error(err[0].message, toastOptions);
+            } else {
+              toast.error(err.message, toastOptions);
+            }
           } finally {
             setSubmitting(false);
           }

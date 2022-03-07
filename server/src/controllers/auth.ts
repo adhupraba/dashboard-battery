@@ -7,6 +7,7 @@ import { env } from "../constants";
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log("register req =>", req.body);
     const { name, email, password } = req.body;
     const existing = await User.findOne({ where: { email } });
 

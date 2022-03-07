@@ -59,7 +59,7 @@ export const Login: FC<ILoginProps> = () => {
                 resetForm();
                 navigate("/dashboard");
               } catch (err: any) {
-                console.error("Register page =>", err);
+                console.error("LOGIN page =>", err);
                 setApiErrors(err);
               } finally {
                 setSubmitting(false);
